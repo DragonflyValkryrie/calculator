@@ -58,11 +58,13 @@ body {
     margin-bottom: 30px;
     background: azure;
     min-width: 350px;
+    max-width: 350px;
     min-height: 150px;
     border: 2px solid black;
     border-radius: 5px;
     text-align: end;
     font-size: xx-large;
+    overflow-wrap: break-word;
 }
 .button-container {
     display: flex;
