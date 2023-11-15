@@ -1,22 +1,43 @@
 let displayContainer = document.querySelector(".display-container");
 let numberOneDigits = "";
 let numberTwoDigits = "";
+let operator = ""
 
-document.querySelectorAll('button').forEach(el => {
-    el.addEventListener('click', () => {
+document.querySelectorAll("button").forEach(el => {
+    el.addEventListener("click", () => {
         const buttonValue = el.textContent;
 
-        if (isDigit(buttonValue)) {
-            digitPressed(buttonValue);
-        } else if (isOperator(buttonValue)) {
+       if (isOperator(buttonValue)) {
             operatorPressed(buttonValue);
-        } else if (isDelete(buttonValue)){
-            deletePressed(buttonValue);
+        } else if (isEqual(buttonValue)) {
+            equalPressed();
+        } else if (isDelete(buttonValue)) {
+            deletePressed();
+        } else if (isClear(buttonValue)) {
+            clearPressed();
         } else 
-        clearPressed(buttonValue);
-
+            digitPressed(buttonValue)
     });
 });
+
+
+function isEqual(value){
+    return value === "=";
+}
+
+function equalPressed(){
+    let expression = displayContainer.textContent;
+
+    const operatorIndex = expression.search(/[+\-*/]/);
+
+    let numberOne = expression.slice(0, operatorIndex);
+    let operator = expression[operatorIndex];
+    let numberTwo = expression.slice(operatorIndex + 1);
+
+    
+    displayContainer.textContent = operate(parseInt(numberOne), operator, parseInt(numberTwo));
+    
+}
 
 function isDelete(value){
     return value === "DELETE";
@@ -25,6 +46,7 @@ function isDelete(value){
 function deletePressed(){
     let currentContent = displayContainer.textContent;
     displayContainer.textContent = currentContent.slice(0, -1);
+    console.log("Delete pressed");
 }
 
 function isClear(value) {
@@ -35,9 +57,7 @@ function clearPressed() {
     displayContainer.textContent = "";
     numberOneDigits = "";
     numberTwoDigits = "";
-}
-function isDigit(value) {
-    return /^\d+$/.test(value);
+    console.log("Clear pressed");
 }
 
 function isOperator(value) {
@@ -50,12 +70,20 @@ function digitPressed(digit) {
 }
 
 function operatorPressed(operator) {
+    let lastChar = displayContainer.textContent.slice(-1);
+
+    if (isOperator(lastChar)) {
+        if (isOperator(operator)) {
+            return console.log("Error: Two operators in a row");
+        }
+    }
+
     displayContainer.textContent += operator;
     console.log("Operator pressed: " + operator);
 }
 
 const add = function(numberOne, numberTwo) {
-    return numberOne, numberTwo;
+    return numberOne + numberTwo;
 };
 
 const subtract = function(numberOne, numberTwo) {
@@ -72,12 +100,12 @@ const divide = function(numberOne, numberTwo) {
 
 function operate(numberOne, operator, numberTwo) {
     if (operator === "+") {
-        add(numberOne, numberTwo);
+        return add(numberOne, numberTwo);
     } else if (operator === "-") {
-        subtract(numberOne, numberTwo);
+        return subtract(numberOne, numberTwo);
     } else if (operator === "*") {
-        multiply(numberOne, numberTwo);
+        return multiply(numberOne, numberTwo);
     } else (operator === "/") 
-        divide(numberOne, numberTwo);
+        return divide(numberOne, numberTwo);
     
 };
