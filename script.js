@@ -1,13 +1,10 @@
-let displayContainer = document.querySelector(".display-container");
-let numberOneDigits = "";
-let numberTwoDigits = "";
-let operator = ""
+const displayContainer = document.querySelector(".display-container");
 
-document.querySelectorAll("button").forEach(el => {
-    el.addEventListener("click", () => {
-        const buttonValue = el.textContent;
+document.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+        const buttonValue = button.textContent;
 
-       if (isOperator(buttonValue)) {
+        if (isOperator(buttonValue)) {
             operatorPressed(buttonValue);
         } else if (isEqual(buttonValue)) {
             equalPressed();
@@ -15,72 +12,86 @@ document.querySelectorAll("button").forEach(el => {
             deletePressed();
         } else if (isClear(buttonValue)) {
             clearPressed();
-        } else 
-            digitPressed(buttonValue)
+        } else {
+            digitPressed(buttonValue);
+        }
     });
 });
 
-
-function isEqual(value){
+function isEqual(value) {
     return value === "=";
-}
+};
 
-function equalPressed(){
-    let expression = displayContainer.textContent;
-
+function equalPressed() {
+    const expression = displayContainer.textContent;
     const operatorIndex = expression.search(/[+\-*/]/);
 
-    let numberOne = expression.slice(0, operatorIndex);
-    let operator = expression[operatorIndex];
-    let numberTwo = expression.slice(operatorIndex + 1);
+    const numberOne = expression.slice(0, operatorIndex);
+    const operator = expression[operatorIndex];
+    const numberTwo = expression.slice(operatorIndex + 1);
 
-    
-    displayContainer.textContent = operate(parseInt(numberOne), operator, parseInt(numberTwo));
-    
-}
+    if (numberOne !== "" && operator && numberTwo !== "") {
+        displayContainer.textContent = operate(parseInt(numberOne), operator, parseInt(numberTwo));
+    };
+};
 
-function isDelete(value){
+function isDelete(value) {
     return value === "DELETE";
-}
+};
 
-function deletePressed(){
+function deletePressed() {
     let currentContent = displayContainer.textContent;
     displayContainer.textContent = currentContent.slice(0, -1);
     console.log("Delete pressed");
-}
+};
 
 function isClear(value) {
     return value === "CLEAR";
-}
+};
 
 function clearPressed() {
     displayContainer.textContent = "";
-    numberOneDigits = "";
-    numberTwoDigits = "";
     console.log("Clear pressed");
-}
+};
 
 function isOperator(value) {
     return ['+', '-', '*', '/'].includes(value);
-}
+};
 
 function digitPressed(digit) {
     displayContainer.textContent += digit;
     console.log("Display updated: " + displayContainer.textContent);
-}
+};
 
 function operatorPressed(operator) {
-    let lastChar = displayContainer.textContent.slice(-1);
+    const lastChar = displayContainer.textContent.slice(-1);
 
     if (isOperator(lastChar)) {
         if (isOperator(operator)) {
-            return console.log("Error: Two operators in a row");
-        }
-    }
+            console.error("Error: Two operators in a row");
+            return;
+        };
+    };
 
     displayContainer.textContent += operator;
     console.log("Operator pressed: " + operator);
-}
+};
+
+function operate(numberOne, operator, numberTwo) {
+    switch (operator) {
+        case "+":
+            return add(numberOne, numberTwo);
+        case "-":
+            return subtract(numberOne, numberTwo);
+        case "*":
+            return multiply(numberOne, numberTwo);
+        case "/":
+            return divide(numberOne, numberTwo);
+        default:
+            console.error("Invalid operator");
+            return 0;
+    };
+};
 
 const add = function(numberOne, numberTwo) {
     return numberOne + numberTwo;
@@ -95,17 +106,8 @@ const multiply = function(numberOne, numberTwo) {
 };
 
 const divide = function(numberOne, numberTwo) {
+    if (numberTwo == 0){
+        return displayContainer.textContent = "Dividing by zero? Really?"
+    }
     return numberOne / numberTwo;
-};
-
-function operate(numberOne, operator, numberTwo) {
-    if (operator === "+") {
-        return add(numberOne, numberTwo);
-    } else if (operator === "-") {
-        return subtract(numberOne, numberTwo);
-    } else if (operator === "*") {
-        return multiply(numberOne, numberTwo);
-    } else (operator === "/") 
-        return divide(numberOne, numberTwo);
-    
 };
